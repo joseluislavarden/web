@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Descargar Videos o Audio de YouTube</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            background-color: #f4f4f9;
+        }
+        .container {
+            text-align: center;
+            background: #fff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 400px;
+        }
+        input {
+            width: calc(100% - 20px);
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        button {
+            padding: 10px 20px;
+            background: #007BFF;
+            color: #fff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        button:hover {
+            background: #0056b3;
+        }
+        .message {
+            margin-top: 15px;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Descargar Videos o Audio</h1>
+        <input type="text" id="url" placeholder="Introduce la URL del video">
+        <button onclick="descargar('video')">Descargar Video</button>
+        <button onclick="descargar('audio')">Descargar Audio</button>
+        <div class="message" id="message"></div>
+    </div>
+    <script>
+        async function descargar(modo) {
+            const url = document.getElementById('url').value;
+            const messageDiv = document.getElementById('message');
+            messageDiv.textContent = "Procesando...";
+
+            try {
+                const response = await fetch('/download', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ url, modo }),
+                });
+
+                const data = await response.json();
+                if (response.ok) {
+                    messageDiv.textContent = data.message;
+                } else {
+                    messageDiv.textContent = data.error || "Ocurrió un error.";
+                }
+            } catch (error) {
+                messageDiv.textContent = "Error al conectar con el servidor.";
+            }
+        }
+    </script>
+</body>
+</html>
